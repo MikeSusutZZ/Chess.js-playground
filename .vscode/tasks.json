@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Node.js App",
+            "type": "shell",
+            "command": "node",
+            "args": [
+                "playGround.mjs"  // Change this to the entry file of your app
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
