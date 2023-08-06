@@ -9,6 +9,6 @@
     "module": "ESNext", 
     "outDir": "./dist"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "chess.mjs"],
   "exclude": ["node_modules"]
 }
