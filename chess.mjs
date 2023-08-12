@@ -24,6 +24,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+import * as ele from './elements.mjs'
 export const WHITE = 'w';
 export const BLACK = 'b';
 export const PAWN = 'p';
@@ -422,9 +423,51 @@ export class Chess {
     _comments = {};
     _castling = { w: 0, b: 0 };
     _positionCounts = {};
-    constructor(fen = DEFAULT_POSITION) {
-        this.load(fen);
+    constructor(whiteElements, blackElements) {
+        this.load(DEFAULT_POSITION);
+        this.loadElements(whiteElements, blackElements)
     }
+
+    loadElements(white, black){
+        for(let i = 0; i<8; i++) {
+            //console.log(String.fromCharCode(i))
+            //console.log(white[0][0])
+            let square = String.fromCharCode(i + 97) + '1'
+            const sq = Ox88[square];
+            this._board[sq].element = white[0][i]
+        }
+        for(let i = 0; i<8; i++) {
+            //console.log(String.fromCharCode(i))
+            let square = String.fromCharCode(i + 97) + '2'
+            const sq = Ox88[square];
+            this._board[sq].element = white[1][i]
+        }
+        for(let i = 0; i<8; i++) {
+            //console.log(String.fromCharCode(i))
+            let square = String.fromCharCode(i + 97) + '8'
+            const sq = Ox88[square];
+            this._board[sq].element = black[0][i]
+        }
+        for(let i = 0; i<8; i++) {
+            //console.log(String.fromCharCode(i))
+            let square = String.fromCharCode(i + 97) + '7'
+            const sq = Ox88[square];
+            this._board[sq].element = black[1][i]
+        }
+    }
+
+    getElementAt(spot){
+        try{
+            return this._board[Ox88[spot]].element;
+        }
+        catch(error){ return null}
+    }
+
+    stateType(sq){
+        try{console.log(this._board[Ox88[sq]].element)}
+        catch(error){console.log('blank')}
+    }
+    
     clear(keepHeaders = false) {
         this._board = new Array(128);
         this._kings = { w: EMPTY, b: EMPTY };
@@ -491,7 +534,7 @@ export class Chess {
             }
             else {
                 const color = piece < 'a' ? WHITE : BLACK;
-                this._put({ type: piece.toLowerCase(), color }, algebraic(square));
+                this._put({ type: piece.toLowerCase(), color}, algebraic(square));
                 square++;
             }
         }
@@ -1013,6 +1056,8 @@ export class Chess {
          * strictly follow the SAN specification.
          */
         let moveObj = null;
+        //THIS
+        //console.log(this.getElementAt(move.from))
         if (typeof move === 'string') {
             moveObj = this._moveFromSan(move, strict);
         }
@@ -1037,10 +1082,17 @@ export class Chess {
                 throw new Error(`Invalid move: ${JSON.stringify(move)}`);
             }
         }
+
+        console.log(this.getElementAt(move.from))
+        console.log(this.getElementAt(move.to))
+        moveObj.captureType = ele.captureType(this.getElementAt(move.from), this.getElementAt(move.to))
+        console.log(moveObj.captureType)
+
         /*
          * need to make a copy of move because we can't generate SAN after the move
          * is made
          */
+
         const prettyMove = this._makePretty(moveObj);
         this._makeMove(moveObj);
         this._positionCounts[prettyMove.after]++;

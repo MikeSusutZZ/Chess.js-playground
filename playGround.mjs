@@ -6,7 +6,20 @@ const rl = createInterface({
   output: process.stdout
 });
 
-const chess = new Chess.Chess();
+let whiteElements = [
+  ['Normal', 'Normal', 'Normal', 'Normal', 'Normal', 'Normal', 'Normal', 'Normal'],
+  ['Normal', 'Normal', 'Normal', 'Normal', 'Normal', 'Normal', 'Normal', 'Normal']
+];
+
+
+let blackElements = [
+  ['Fighting', 'Fighting', 'Fighting', 'Fighting', 'Fighting', 'Fighting', 'Fighting'],
+  ['Fighting', 'Fighting', 'Fighting', 'Fighting', 'Fighting', 'Fighting', 'Fighting', 'Fighting']
+];
+
+
+const chess = new Chess.Chess(whiteElements, blackElements);
+
 
 async function inp() {
   return new Promise((resolve) => {
@@ -25,8 +38,10 @@ async function main() {
       chess.move({ from, to });
     } catch (error) {
       console.log(`${from} to ${to} failed`);
+      console.log(error)
     }
     console.log(chess.ascii());
+    //chess.stateType('e4')
   }
 
   rl.close();
